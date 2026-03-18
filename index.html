@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fat Roosters — Crispy. Juicy. Unforgettable.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ─── VARIABLES ─────────────────────────────────────────────── */
+:root {
+  --red:    #C41E3A;
+  --red2:   #9B1530;
+  --yellow: #F5A623;
+  --yellow2:#E8920A;
+  --black:  #0A0A0A;
+  --dark:   #111111;
+  --dark2:  #1A1A1A;
+  --dark3:  #222222;
+  --cream:  #FFF8F0;
+  --white:  #FFFFFF;
+  --gray:   #888888;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-cond:    'Barlow Condensed', sans-serif;
+  --font-body:    'Barlow', sans-serif;
+  --nav-h: 72px;
+}
+
+/* ─── RESET & BASE ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ─── SCROLLBAR ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+
+/* ─── NOISE TEXTURE OVERLAY ─────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* ─── SCROLL REVEAL ─────────────────────────────────────────── */
+.reveal { opacity:0; transform:translateY(40px); transition:opacity .7s ease,transform .7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-left { opacity:0; transform:translateX(-50px); transition:opacity .7s ease,transform .7s ease; }
+.reveal-left.visible { opacity:1; transform:translateX(0); }
+.reveal-right { opacity:0; transform:translateX(50px); transition:opacity .7s ease,transform .7s ease; }
+.reveal-right.visible { opacity:1; transform:translateX(0); }
+
+/* ─── NAVIGATION ─────────────────────────────────────────────── */
+nav {
+  position: fixed; top:0; left:0; right:0;
+  height: var(--nav-h);
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(196,30,58,0.2);
+  z-index: 1000;
+  display: flex; align-items: center;
+  padding: 0 5vw;
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 4px 40px rgba(196,30,58,0.15); border-bottom-color:rgba(196,30,58,0.4); }
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 2rem; letter-spacing:0.05em;
+  color: var(--yellow);
+  text-shadow: 0 0 20px rgba(245,166,35,0.4);
+  flex-shrink:0; line-height:1;
+}
+.nav-logo span { color: var(--red); }
+.nav-links { display:flex; gap:2.5rem; margin:0 auto; list-style:none; }
+.nav-links a {
+  font-family: var(--font-cond); font-size:1rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:rgba(255,248,240,0.7); transition:color 0.2s; position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-4px; left:0; right:0;
+  height:2px; background:var(--yellow);
+  transform:scaleX(0); transition:transform 0.2s; transform-origin:left;
+}
+.nav-links a:hover { color:var(--yellow); }
+.nav-links a:hover::after { transform:scaleX(1); }
+.nav-right { display:flex; align-items:center; gap:1rem; flex-shrink:0; }
+.cart-btn {
+  display:flex; align-items:center; gap:.5rem;
+  font-family:var(--font-cond); font-size:.9rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--cream); padding:.4rem .7rem;
+  border:1px solid rgba(255,248,240,0.2); border-radius:4px; transition:all .2s;
+}
+.cart-btn:hover { border-color:var(--yellow); color:var(--yellow); }
+.cart-count {
+  background:var(--red); color:white; font-size:.7rem; font-weight:700;
+  min-width:18px; height:18px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.cart-count.bump { transform:scale(1.5); }
+.btn-order-nav {
+  font-family:var(--font-cond); font-size:.95rem; font-weight:900;
+  letter-spacing:.12em; text-transform:uppercase;
+  background:var(--red); color:white; padding:.55rem 1.4rem; border-radius:4px;
+  transition:background .2s,transform .15s;
+}
+.btn-order-nav:hover { background:var(--red2); transform:translateY(-1px); }
+.hamburger { display:none; flex-direction:column; gap:5px; padding:4px; }
+.hamburger span { display:block; width:24px; height:2px; background:var(--cream); transition:all .3s; }
+
+/* ─── DELIVERY BANNER ───────────────────────────────────────── */
+.delivery-banner {
+  background: linear-gradient(90deg, var(--red2), var(--red), #d4243f);
+  padding: .6rem 5vw;
+  display: flex; align-items:center; justify-content:center; gap:2rem;
+  flex-wrap:wrap;
+  position:fixed; top:var(--nav-h); left:0; right:0;
+  z-index:999;
+  font-family:var(--font-cond); font-size:.8rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.delivery-banner span { display:flex; align-items:center; gap:.4rem; }
+.delivery-banner strong { color:var(--yellow); }
+:root { --banner-h: 34px; }
+
+/* ─── HERO ──────────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display:flex; align-items:center;
+  position:relative; overflow:hidden;
+  padding-top: calc(var(--nav-h) + var(--banner-h));
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(196,30,58,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 10% 90%, rgba(245,166,35,0.1) 0%, transparent 50%),
+    linear-gradient(160deg, #0A0A0A 0%, #1a0a0a 50%, #0a0505 100%);
+}
+.hero-bg::after {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(196,30,58,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,30,58,0.06) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 90% 90% at 50% 50%, black 0%, transparent 80%);
+}
+.flames { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.flame { position:absolute; bottom:-10px; font-size:2rem; animation:rise linear infinite; opacity:0; }
+@keyframes rise {
+  0%   { transform:translateY(0) scale(1) rotate(-5deg); opacity:0; }
+  10%  { opacity:.8; }
+  80%  { opacity:.4; }
+  100% { transform:translateY(-120vh) scale(.3) rotate(15deg); opacity:0; }
+}
+.hero-inner { position:relative; z-index:2; padding:0 5vw; max-width:900px; }
+.hero-eyebrow {
+  font-family:var(--font-cond); font-size:.85rem; font-weight:700;
+  letter-spacing:.35em; text-transform:uppercase; color:var(--yellow);
+  display:flex; align-items:center; gap:.75rem; margin-bottom:1.25rem;
+  opacity:0; animation:slideIn .6s .3s forwards;
+}
+.hero-eyebrow::before { content:''; display:block; width:40px; height:2px; background:var(--yellow); }
+@keyframes slideIn { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+.hero-title {
+  font-family:var(--font-display);
+  font-size:clamp(4.5rem, 12vw, 10rem);
+  line-height:.9; letter-spacing:.02em; text-transform:uppercase;
+  color:var(--cream); opacity:0;
+  animation:heroTitle .8s .5s cubic-bezier(.2,0,0,1) forwards;
+}
+.hero-title em { font-style:normal; color:var(--yellow); text-shadow:0 0 40px rgba(245,166,35,.5),0 0 80px rgba(245,166,35,.2); display:block; }
+.hero-title strong { font-style:normal; color:var(--red); -webkit-text-stroke:2px var(--red); text-shadow:0 0 30px rgba(196,30,58,.5); }
+@keyframes heroTitle { from{opacity:0;transform:translateY(30px) skewY(2deg)} to{opacity:1;transform:translateY(0) skewY(0)} }
+.hero-sub {
+  font-size:1.1rem; color:rgba(255,248,240,.65);
+  max-width:480px; margin-top:1.5rem; line-height:1.7;
+  opacity:0; animation:slideIn .6s .9s forwards;
+}
+.hero-sub strong { color:var(--yellow); font-weight:600; }
+.hero-rating {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,248,240,.1);
+  border-radius:20px; padding:.35rem .9rem;
+  font-family:var(--font-cond); font-size:.85rem; font-weight:700;
+  letter-spacing:.05em; color:rgba(255,248,240,.8);
+  margin-top:1rem; opacity:0; animation:slideIn .6s 1.0s forwards;
+}
+.hero-rating .stars-inline { color:var(--yellow); font-size:.9rem; }
+.hero-ctas {
+  display:flex; align-items:center; gap:1.25rem;
+  margin-top:2rem; opacity:0;
+  animation:slideIn .6s 1.1s forwards; flex-wrap:wrap;
+}
+.btn-primary {
+  font-family:var(--font-cond); font-size:1.05rem; font-weight:900;
+  letter-spacing:.12em; text-transform:uppercase;
+  background:var(--red); color:white; padding:1rem 2.5rem;
+  border-radius:4px; overflow:hidden; position:relative;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 4px 20px rgba(196,30,58,.4);
+}
+.btn-primary::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%); opacity:0; transition:opacity .2s; }
+.btn-primary:hover { transform:translateY(-3px); box-shadow:0 8px 30px rgba(196,30,58,.5); }
+.btn-primary:hover::before { opacity:1; }
+.btn-secondary {
+  font-family:var(--font-cond); font-size:1.05rem; font-weight:900;
+  letter-spacing:.12em; text-transform:uppercase;
+  background:transparent; color:var(--cream); padding:1rem 2.5rem;
+  border-radius:4px; border:2px solid rgba(255,248,240,.3);
+  transition:border-color .2s,color .2s,transform .2s;
+}
+.btn-secondary:hover { border-color:var(--yellow); color:var(--yellow); transform:translateY(-3px); }
+.hero-badge {
+  position:absolute; right:8vw; bottom:12%;
+  width:120px; height:120px; background:var(--yellow); border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  animation:spin 20s linear infinite, heroFadeIn 1s 1.5s forwards;
+  opacity:0; box-shadow:0 0 40px rgba(245,166,35,.5);
+}
+@keyframes heroFadeIn { to{opacity:1} }
+@keyframes spin { to{transform:rotate(360deg)} }
+.hero-badge-inner { animation:spinReverse 20s linear infinite; }
+@keyframes spinReverse { to{transform:rotate(-360deg)} }
+.hero-badge p { font-family:var(--font-cond); font-size:.65rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; color:var(--black); line-height:1.2; }
+.hero-badge .big { font-size:1.3rem; font-weight:900; color:var(--red2); }
+
+/* Drip */
+.drip-container { position:absolute; top:calc(var(--nav-h) + var(--banner-h) - 2px); left:0; right:0; display:flex; pointer-events:none; z-index:5; }
+.drip { flex:1; height:30px; position:relative; }
+.drip::after { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:8px; background:var(--red); border-radius:0 0 50% 50%; animation:drip-fall linear infinite; opacity:.7; }
+@keyframes drip-fall { 0%{height:0;top:0;opacity:.7} 70%{height:25px} 100%{height:30px;opacity:0} }
+.drip:nth-child(1)::after  { animation-duration:3.2s; animation-delay:0s;   width:6px; }
+.drip:nth-child(2)::after  { animation-duration:4.1s; animation-delay:.8s;  width:9px; }
+.drip:nth-child(3)::after  { animation-duration:2.8s; animation-delay:1.5s; width:5px; }
+.drip:nth-child(4)::after  { animation-duration:3.7s; animation-delay:.3s;  width:7px; }
+.drip:nth-child(5)::after  { animation-duration:5.0s; animation-delay:2.1s; width:10px; }
+.drip:nth-child(6)::after  { animation-duration:3.4s; animation-delay:1.1s; width:6px; }
+.drip:nth-child(7)::after  { animation-duration:4.6s; animation-delay:.6s;  width:8px; }
+.drip:nth-child(8)::after  { animation-duration:2.9s; animation-delay:1.8s; width:5px; }
+.drip:nth-child(9)::after  { animation-duration:3.9s; animation-delay:.4s;  width:7px; }
+.drip:nth-child(10)::after { animation-duration:4.3s; animation-delay:2.4s; width:9px; }
+
+/* ─── STATS BAR ─────────────────────────────────────────────── */
+.stats-bar {
+  background:var(--red); padding:1.25rem 5vw;
+  display:flex; justify-content:space-around; align-items:center;
+  flex-wrap:wrap; gap:1rem; position:relative; z-index:3; overflow:hidden;
+}
+.stats-bar::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 50%); }
+.stat { text-align:center; position:relative; }
+.stat-num { font-family:var(--font-display); font-size:2.2rem; color:var(--yellow); line-height:1; text-shadow:0 0 20px rgba(245,166,35,.4); }
+.stat-label { font-family:var(--font-cond); font-size:.75rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-top:.25rem; }
+.stat-divider { width:1px; height:40px; background:rgba(255,255,255,.2); }
+
+/* ─── SECTION COMMON ────────────────────────────────────────── */
+section { position:relative; }
+.section-label { font-family:var(--font-cond); font-size:.8rem; font-weight:700; letter-spacing:.4em; text-transform:uppercase; color:var(--yellow); display:flex; align-items:center; gap:.75rem; margin-bottom:.75rem; }
+.section-label::before { content:''; display:block; width:30px; height:2px; background:var(--yellow); flex-shrink:0; }
+.section-title { font-family:var(--font-display); font-size:clamp(2.8rem,6vw,5rem); line-height:.9; letter-spacing:.02em; text-transform:uppercase; color:var(--cream); }
+.section-title span { color:var(--red); }
+
+/* ─── MENU ──────────────────────────────────────────────────── */
+#menu { padding:7rem 5vw; background:var(--dark); }
+.menu-header { margin-bottom:3.5rem; }
+.menu-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:2rem; }
+.tab { font-family:var(--font-cond); font-size:.85rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:.5rem 1.25rem; border-radius:3px; border:1.5px solid rgba(255,248,240,.15); color:rgba(255,248,240,.5); transition:all .2s; }
+.tab.active,.tab:hover { background:var(--red); border-color:var(--red); color:white; }
+.menu-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.5rem; }
+.menu-category { display:none; }
+.menu-category.active { display:contents; }
+.menu-card { background:var(--dark2); border:1px solid rgba(255,248,240,.06); border-radius:8px; overflow:hidden; transition:transform .3s,border-color .3s,box-shadow .3s; position:relative; }
+.menu-card:hover { transform:translateY(-6px); border-color:rgba(245,166,35,.3); box-shadow:0 20px 40px rgba(0,0,0,.4),0 0 0 1px rgba(245,166,35,.15); }
+.menu-card-emoji { background:var(--dark3); height:140px; display:flex; align-items:center; justify-content:center; font-size:4rem; position:relative; overflow:hidden; }
+.menu-card-emoji::after { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 60%,rgba(245,166,35,.08) 0%,transparent 70%); }
+.unavail .menu-card-emoji { filter:grayscale(.8); opacity:.6; }
+.unavail-badge { position:absolute; top:.6rem; right:.6rem; background:rgba(0,0,0,.7); color:rgba(255,255,255,.5); font-family:var(--font-cond); font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:.25rem .6rem; border-radius:2px; }
+.menu-card-body { padding:1.25rem; }
+.menu-card-name { font-family:var(--font-cond); font-size:1.05rem; font-weight:900; letter-spacing:.05em; text-transform:uppercase; color:var(--cream); margin-bottom:.35rem; }
+.menu-card-desc { font-size:.8rem; color:var(--gray); line-height:1.5; margin-bottom:1rem; }
+.menu-card-footer { display:flex; align-items:center; justify-content:space-between; }
+.menu-card-price { font-family:var(--font-display); font-size:1.6rem; color:var(--yellow); line-height:1; }
+.btn-add { font-family:var(--font-cond); font-size:.8rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; background:var(--red); color:white; padding:.5rem 1rem; border-radius:3px; transition:background .2s,transform .15s; position:relative; overflow:hidden; }
+.btn-add:hover { background:var(--red2); transform:scale(1.05); }
+.btn-add.added { background:#1a7a3c; animation:addedPulse .4s ease; }
+@keyframes addedPulse { 0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+.unavail .btn-add { background:rgba(255,255,255,.1); color:rgba(255,255,255,.35); cursor:default; pointer-events:none; }
+
+/* ─── DEALS ─────────────────────────────────────────────────── */
+#deals { padding:7rem 5vw; background:var(--black); overflow:hidden; }
+.deals-header { margin-bottom:3.5rem; }
+.deals-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
+.deal-card { border-radius:12px; padding:2.5rem; position:relative; overflow:hidden; transition:transform .3s,box-shadow .3s; min-height:280px; display:flex; flex-direction:column; justify-content:flex-end; }
+.deal-card:hover { transform:translateY(-8px) scale(1.01); box-shadow:0 30px 60px rgba(0,0,0,.5); }
+.deal-card:nth-child(1) { background:linear-gradient(135deg,#7B1024 0%,var(--red) 50%,#C84B5A 100%); }
+.deal-card:nth-child(2) { background:linear-gradient(135deg,#7A4A05 0%,var(--yellow2) 50%,var(--yellow) 100%); }
+.deal-card:nth-child(3) { background:linear-gradient(135deg,#1A1A1A 0%,#333 50%,#444 100%); border:1px solid rgba(245,166,35,.3); }
+.deal-card::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='150' cy='50' r='80' fill='rgba(255,255,255,0.05)'/%3E%3Ccircle cx='30' cy='170' r='60' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") no-repeat center/cover; pointer-events:none; }
+.deal-badge { position:absolute; top:1.5rem; right:1.5rem; background:var(--black); color:var(--yellow); font-family:var(--font-cond); font-size:.75rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; padding:.4rem .9rem; border-radius:2px; box-shadow:0 2px 10px rgba(0,0,0,.3); }
+.deal-card:nth-child(3) .deal-badge { background:var(--yellow); color:var(--black); }
+.deal-emoji { font-size:4rem; position:absolute; top:1.5rem; left:1.5rem; filter:drop-shadow(0 4px 8px rgba(0,0,0,.3)); }
+.deal-name { font-family:var(--font-display); font-size:2rem; letter-spacing:.04em; color:white; text-shadow:0 2px 10px rgba(0,0,0,.3); position:relative; z-index:1; line-height:1; margin-bottom:.4rem; }
+.deal-desc { font-size:.85rem; color:rgba(255,255,255,.75); position:relative; z-index:1; margin-bottom:1rem; line-height:1.5; }
+.deal-footer { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+.deal-price { display:flex; align-items:baseline; gap:.5rem; }
+.deal-price-old { font-family:var(--font-cond); font-size:1rem; font-weight:700; color:rgba(255,255,255,.5); text-decoration:line-through; }
+.deal-price-new { font-family:var(--font-display); font-size:2.4rem; color:white; line-height:1; text-shadow:0 0 20px rgba(255,255,255,.3); }
+.deal-card:nth-child(2) .deal-price-new { color:var(--black); }
+.btn-deal { font-family:var(--font-cond); font-size:.85rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; background:rgba(255,255,255,.2); color:white; padding:.6rem 1.25rem; border-radius:3px; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); transition:background .2s,transform .2s; }
+.deal-card:nth-child(2) .btn-deal { color:var(--black); border-color:rgba(0,0,0,.2); background:rgba(0,0,0,.15); }
+.btn-deal:hover { background:rgba(255,255,255,.35); transform:scale(1.05); }
+.deal-savings { position:absolute; bottom:0; left:0; background:rgba(0,0,0,.3); font-family:var(--font-cond); font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--yellow); padding:.3rem .75rem; border-radius:0 4px 0 0; }
+
+/* ─── ABOUT ─────────────────────────────────────────────────── */
+#about { padding:7rem 5vw; background:var(--dark); overflow:hidden; }
+.about-inner { display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center; }
+.about-art { position:relative; display:flex; align-items:center; justify-content:center; }
+.about-art-bg { width:380px; height:380px; border-radius:50%; background:radial-gradient(circle,rgba(196,30,58,.15) 0%,rgba(196,30,58,.05) 50%,transparent 70%); display:flex; align-items:center; justify-content:center; position:relative; }
+.about-art-bg::before { content:''; position:absolute; inset:20px; border:1px dashed rgba(196,30,58,.25); border-radius:50%; animation:rotateBorder 20s linear infinite; }
+.about-art-bg::after { content:''; position:absolute; inset:45px; border:1px dashed rgba(245,166,35,.15); border-radius:50%; animation:rotateBorder 30s linear infinite reverse; }
+@keyframes rotateBorder { to{transform:rotate(360deg)} }
+.about-emoji-main { font-size:9rem; filter:drop-shadow(0 0 40px rgba(196,30,58,.5)); animation:float 4s ease-in-out infinite; position:relative; z-index:1; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.about-emoji-orbit { position:absolute; font-size:2rem; animation:orbit linear infinite; }
+.orbit-1 { animation-duration:8s;  top:10%; left:10%; }
+.orbit-2 { animation-duration:12s; top:15%; right:5%; animation-delay:-3s; }
+.orbit-3 { animation-duration:10s; bottom:10%; left:15%; animation-delay:-5s; }
+@keyframes orbit { 0%{transform:rotate(0deg) translateX(10px) rotate(0deg)} 100%{transform:rotate(360deg) translateX(10px) rotate(-360deg)} }
+.about-text .section-label { margin-bottom:.75rem; }
+.about-text .section-title { margin-bottom:1.5rem; }
+.about-story { font-size:1.05rem; color:rgba(255,248,240,.7); line-height:1.8; margin-bottom:1.25rem; }
+.about-story strong { color:var(--yellow); font-weight:600; }
+.about-pillars { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:2rem; }
+.pillar { background:var(--dark2); border:1px solid rgba(255,248,240,.06); border-radius:6px; padding:1.25rem; transition:border-color .2s,transform .2s; }
+.pillar:hover { border-color:rgba(196,30,58,.4); transform:translateY(-2px); }
+.pillar-icon { font-size:1.5rem; margin-bottom:.5rem; }
+.pillar-name { font-family:var(--font-cond); font-size:.9rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; color:var(--cream); margin-bottom:.25rem; }
+.pillar-desc { font-size:.8rem; color:var(--gray); line-height:1.5; }
+
+/* ─── TESTIMONIALS ──────────────────────────────────────────── */
+#testimonials { padding:7rem 5vw; background:var(--black); overflow:hidden; }
+.testi-header { margin-bottom:3.5rem; text-align:center; }
+.testi-header .section-label { justify-content:center; }
+.testi-header .section-label::before { display:none; }
+.testi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
+.testi-card { background:var(--dark2); border:1px solid rgba(255,248,240,.06); border-radius:8px; padding:2rem; position:relative; overflow:hidden; transition:transform .3s,border-color .3s; }
+.testi-card:hover { transform:translateY(-5px); border-color:rgba(196,30,58,.3); }
+.testi-card::before { content:'\201C'; position:absolute; top:-.5rem; left:1.5rem; font-family:Georgia,serif; font-size:7rem; line-height:1; color:rgba(196,30,58,.12); pointer-events:none; }
+.stars { display:flex; gap:3px; margin-bottom:1rem; }
+.star { color:var(--yellow); font-size:1.1rem; }
+.testi-quote { font-size:1rem; color:rgba(255,248,240,.8); line-height:1.7; margin-bottom:1.5rem; font-style:italic; }
+.testi-footer { display:flex; align-items:center; gap:.75rem; }
+.testi-avatar { width:44px; height:44px; border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:700; color:white; font-family:var(--font-cond); flex-shrink:0; }
+.testi-name { font-family:var(--font-cond); font-size:1rem; font-weight:700; letter-spacing:.05em; color:var(--cream); text-transform:uppercase; }
+.testi-location { font-size:.8rem; color:var(--gray); }
+
+/* ─── FIND US ────────────────────────────────────────────────── */
+#findus { padding:7rem 5vw; background:var(--dark); overflow:hidden; }
+.findus-inner { display:grid; grid-template-columns:1fr 1.4fr; gap:4rem; align-items:start; }
+.findus-info .section-title { margin-bottom:2rem; }
+.location-card { background:var(--dark2); border:1px solid rgba(255,248,240,.06); border-radius:8px; padding:1.75rem; margin-bottom:1rem; border-left:3px solid var(--red); transition:transform .2s,box-shadow .2s; }
+.location-card:hover { transform:translateX(5px); box-shadow:-3px 0 0 var(--yellow),4px 0 20px rgba(0,0,0,.3); }
+.location-name { font-family:var(--font-cond); font-size:1.2rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:var(--cream); margin-bottom:.75rem; }
+.location-detail { display:flex; align-items:flex-start; gap:.6rem; font-size:.9rem; color:rgba(255,248,240,.65); margin-bottom:.4rem; line-height:1.5; }
+.location-detail .icon { font-size:1rem; flex-shrink:0; margin-top:.1rem; }
+.location-hours { margin-top:.75rem; padding-top:.75rem; border-top:1px solid rgba(255,248,240,.08); display:grid; grid-template-columns:1fr 1fr; gap:.35rem 1rem; }
+.hours-item { font-size:.8rem; color:rgba(255,248,240,.5); }
+.hours-item strong { color:rgba(255,248,240,.85); font-weight:600; }
+.map-placeholder { background:var(--dark2); border:1px solid rgba(255,248,240,.08); border-radius:12px; overflow:hidden; height:450px; position:relative; display:flex; align-items:center; justify-content:center; }
+.map-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(196,30,58,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(196,30,58,.08) 1px,transparent 1px); background-size:40px 40px; }
+.map-pin { position:relative; z-index:2; text-align:center; }
+.map-pin-icon { font-size:3.5rem; filter:drop-shadow(0 0 20px rgba(196,30,58,.8)); animation:bounce 2s ease-in-out infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.map-pin p { font-family:var(--font-cond); font-size:.85rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,248,240,.5); margin-top:.75rem; }
+.map-roads { position:absolute; inset:0; pointer-events:none; }
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer { background:#050505; border-top:1px solid rgba(196,30,58,.2); padding:5rem 5vw 2rem; }
+.footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1.5fr; gap:3rem; padding-bottom:3rem; border-bottom:1px solid rgba(255,248,240,.06); }
+.footer-brand .footer-logo { font-family:var(--font-display); font-size:2.2rem; color:var(--yellow); letter-spacing:.05em; margin-bottom:.75rem; line-height:1; }
+.footer-brand .footer-logo span { color:var(--red); }
+.footer-tagline { font-size:.9rem; color:var(--gray); line-height:1.6; margin-bottom:1.5rem; max-width:260px; }
+.social-links { display:flex; gap:.75rem; }
+.social-btn { width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,248,240,.12); display:flex; align-items:center; justify-content:center; font-size:1rem; transition:border-color .2s,background .2s,transform .2s; color:var(--gray); }
+.social-btn:hover { border-color:var(--red); background:rgba(196,30,58,.15); color:var(--cream); transform:translateY(-3px); }
+.footer-col h4 { font-family:var(--font-cond); font-size:.8rem; font-weight:900; letter-spacing:.25em; text-transform:uppercase; color:var(--cream); margin-bottom:1.25rem; }
+.footer-links { list-style:none; }
+.footer-links li { margin-bottom:.6rem; }
+.footer-links a { font-size:.9rem; color:var(--gray); transition:color .2s; }
+.footer-links a:hover { color:var(--yellow); }
+.newsletter-form { display:flex; gap:0; margin-top:.5rem; }
+.newsletter-input { flex:1; background:var(--dark2); border:1px solid rgba(255,248,240,.1); border-right:none; border-radius:4px 0 0 4px; padding:.7rem 1rem; color:var(--cream); font-family:var(--font-body); font-size:.9rem; outline:none; transition:border-color .2s; }
+.newsletter-input::placeholder { color:rgba(255,248,240,.3); }
+.newsletter-input:focus { border-color:rgba(196,30,58,.5); }
+.newsletter-btn { background:var(--red); color:white; font-family:var(--font-cond); font-size:.8rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; padding:.7rem 1.25rem; border-radius:0 4px 4px 0; transition:background .2s; flex-shrink:0; }
+.newsletter-btn:hover { background:var(--red2); }
+.footer-bottom { display:flex; align-items:center; justify-content:space-between; padding-top:2rem; flex-wrap:wrap; gap:1rem; }
+.footer-copy { font-size:.8rem; color:rgba(255,248,240,.25); }
+.footer-copy span { color:var(--red); }
+
+/* ─── TOAST ─────────────────────────────────────────────────── */
+.toast { position:fixed; bottom:2rem; right:2rem; background:var(--dark2); border:1px solid rgba(245,166,35,.3); border-left:3px solid var(--yellow); color:var(--cream); font-family:var(--font-cond); font-size:.95rem; font-weight:700; letter-spacing:.05em; padding:1rem 1.5rem; border-radius:6px; box-shadow:0 8px 30px rgba(0,0,0,.4); transform:translateX(120%); transition:transform .4s cubic-bezier(.34,1.56,.64,1); z-index:9000; max-width:300px; }
+.toast.show { transform:translateX(0); }
+
+/* ─── MOBILE NAV ────────────────────────────────────────────── */
+.mobile-menu { display:none; position:fixed; top:calc(var(--nav-h) + var(--banner-h)); left:0; right:0; background:rgba(10,10,10,.97); backdrop-filter:blur(12px); padding:2rem 5vw; z-index:998; border-bottom:1px solid rgba(196,30,58,.2); flex-direction:column; gap:1rem; transform:translateY(-10px); opacity:0; transition:transform .3s,opacity .3s; }
+.mobile-menu.open { display:flex; transform:translateY(0); opacity:1; }
+.mobile-menu a { font-family:var(--font-cond); font-size:1.3rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--cream); padding:.5rem 0; border-bottom:1px solid rgba(255,248,240,.06); transition:color .2s; }
+.mobile-menu a:hover { color:var(--yellow); }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media(max-width:900px) {
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+  .about-inner { grid-template-columns:1fr; gap:3rem; }
+  .about-art { order:-1; }
+  .about-art-bg { width:280px; height:280px; }
+  .about-emoji-main { font-size:7rem; }
+  .findus-inner { grid-template-columns:1fr; }
+  .footer-top { grid-template-columns:1fr 1fr; }
+  .hero-badge { display:none; }
+}
+@media(max-width:600px) {
+  .stats-bar { justify-content:center; }
+  .stat-divider { display:none; }
+  .footer-top { grid-template-columns:1fr; }
+  .footer-bottom { flex-direction:column; text-align:center; }
+  .btn-primary,.btn-secondary { width:100%; text-align:center; }
+  .hero-ctas { flex-direction:column; align-items:stretch; }
+  .about-pillars { grid-template-columns:1fr; }
+  .delivery-banner { gap:1rem; font-size:.72rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- DELIVERY INFO BANNER -->
+<div class="delivery-banner">
+  <span>⭐ <strong>4.5</strong> (100+ reviews)</span>
+  <span>🛵 Delivery <strong>£0.99</strong></span>
+  <span>📋 Service fee <strong>£0.99–£2.99</strong></span>
+  <span>📦 No minimum order</span>
+  <span>🕙 Order on <strong>Just Eat</strong></span>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <div class="nav-logo">Fat<span>R</span>oosters 🐓</div>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#deals">Platters</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#findus">Find Us</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <a href="#menu" class="btn-order-nav">Order Now</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#menu"   onclick="closeMobile()">Menu</a>
+  <a href="#deals"  onclick="closeMobile()">Platters</a>
+  <a href="#about"  onclick="closeMobile()">About</a>
+  <a href="#findus" onclick="closeMobile()">Find Us</a>
+</div>
+
+<!-- RED DRIP -->
+<div class="drip-container" aria-hidden="true">
+  <div class="drip"></div><div class="drip"></div><div class="drip"></div>
+  <div class="drip"></div><div class="drip"></div><div class="drip"></div>
+  <div class="drip"></div><div class="drip"></div><div class="drip"></div>
+  <div class="drip"></div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="flames" id="flames" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Hemel Hempstead — Peri Peri &amp; Fried Chicken</p>
+    <h1 class="hero-title">
+      <em>Crispy.</em>
+      <span style="color:var(--cream)">Juicy.</span>
+      <strong>Unforgettable.</strong>
+    </h1>
+    <p class="hero-sub">
+      Flame-grilled Peri Peri, loaded boxes, smash burgers, doner kebabs,
+      milkshakes &amp; more. <strong>Real food. Real flavour. Every time.</strong>
+    </p>
+    <div class="hero-rating">
+      <span class="stars-inline">★★★★½</span>
+      4.5 rating &nbsp;·&nbsp; 100+ reviews &nbsp;·&nbsp; Delivery from £0.99
+    </div>
+    <div class="hero-ctas">
+      <a href="#menu" class="btn-primary">Order Now 🔥</a>
+      <a href="#menu" class="btn-secondary">View Menu</a>
+    </div>
+  </div>
+  <div class="hero-badge">
+    <div class="hero-badge-inner">
+      <p class="big">⭐</p>
+      <p>Rated</p>
+      <p>4.5/5</p>
+      <p>Just Eat</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar reveal">
+  <div class="stat"><div class="stat-num">4.5★</div><div class="stat-label">Just Eat Rating</div></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Reviews</div></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><div class="stat-num">£0.99</div><div class="stat-label">Delivery Fee</div></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><div class="stat-num">£0</div><div class="stat-label">Min. Order</div></div>
+</div>
+
+<!-- MENU SECTION -->
+<section id="menu">
+  <div style="padding:7rem 5vw;background:var(--dark);">
+    <div class="menu-header reveal">
+      <p class="section-label">Full Menu</p>
+      <h2 class="section-title">What Are You <span>Having?</span></h2>
+    </div>
+    <div class="menu-tabs reveal" id="menuTabs">
+      <button class="tab active" data-cat="highlights">⭐ Highlights</button>
+      <button class="tab" data-cat="grilled">🔥 Grilled Peri Peri</button>
+      <button class="tab" data-cat="smash">🍔 Smash Burgers</button>
+      <button class="tab" data-cat="fried">🍗 Fried Collection</button>
+      <button class="tab" data-cat="loaded">📦 Loaded Boxes</button>
+      <button class="tab" data-cat="extras">🍟 Sides &amp; More</button>
+      <button class="tab" data-cat="sweet">🍰 Desserts &amp; Drinks</button>
+    </div>
+    <div class="menu-grid" id="menuGrid">
+
+      <!-- HIGHLIGHTS -->
+      <div class="menu-category active" id="cat-highlights">
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍗</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Half Peri-Peri Chicken</div>
+            <div class="menu-card-desc">Flame-grilled juicy half chicken. Choose your heat: Mild, Medium, Hot, Extra Hot, Lemon &amp; Herb, Mango &amp; Lime, BBQ.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £10.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Half Peri-Peri Chicken')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">📦🔥</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Loaded Peri Peri Chicken &amp; Rice</div>
+            <div class="menu-card-desc">Peri Peri grilled chicken strips with your choice of flavour, served with lightly spiced rice.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Loaded Peri Peri Chicken &amp; Rice')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍔✨</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Neo Smash Burger</div>
+            <div class="menu-card-desc">Two smashed fresh beef patties, lettuce, tomato, red onion, gherkins, cheese &amp; golden homemade sauce on brioche bun.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Neo Smash Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🌯</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Grilled Chicken Breast Wrap</div>
+            <div class="menu-card-desc">Tender peri-grilled chicken in soft tortilla with your choice of sauce, crunchy salad &amp; peri flavour. On its own or as a meal.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Grilled Chicken Wrap')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍗🍟</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Single Serve Platter</div>
+            <div class="menu-card-desc">¼ Chicken, 3 Strips or 3 Wings, Chips, Salad, Can of Drink &amp; 1 Dip. A full meal deal.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £11.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Single Serve Platter')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🥤🍫</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Ferrero Rocher Milkshake</div>
+            <div class="menu-card-desc">Rich and creamy Ferrero Rocher milkshake. Optional: whipping cream &amp; chocolate sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £5.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Ferrero Rocher Milkshake')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🫔🌶️</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Hot &amp; Spicy Seekh Kebab Roll</div>
+            <div class="menu-card-desc">Asian-inspired spicy chicken seekh kebabs (x2) in a freshly grilled tortilla with salad &amp; sauces.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £9.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Seekh Kebab Roll')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍰</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Luxury NY Cheesecake</div>
+            <div class="menu-card-desc">Rich and creamy New York-style cheesecake with Madagascan vanilla on a crunchy digestive base.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£3.99</div>
+              <button class="btn-add" onclick="addToCart(this,'NY Cheesecake')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRILLED PERI PERI -->
+      <div class="menu-category" id="cat-grilled">
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍗</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Quarter Peri Peri Chicken</div>
+            <div class="menu-card-desc">Flame-grilled juicy quarter chicken. Choose: Mild, Medium, Hot, Extra Hot, Lemon &amp; Herb, Mango &amp; Lime, BBQ &amp; more.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Quarter Peri Peri Chicken')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🐔🔥</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Half Peri-Peri Chicken</div>
+            <div class="menu-card-desc">Flame-grilled juicy half chicken with your choice of peri flavours. On its own or as a meal with chips &amp; drink.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £10.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Half Peri-Peri Chicken')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🐓</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Whole Peri-Peri Chicken</div>
+            <div class="menu-card-desc">Flame-grilled whole chicken. All the flavours. All the glory. On its own or as a meal.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £15.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Whole Peri-Peri Chicken')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍗✨</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">5 Peri-Peri Chicken Fillets</div>
+            <div class="menu-card-desc">Flame-grilled chicken fillets with your choice of flavours. On its own or as a meal.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.49</div>
+              <button class="btn-add" onclick="addToCart(this,'5 Peri-Peri Fillets')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍖</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">5 Peri-Peri Chicken Wings</div>
+            <div class="menu-card-desc">Flame-grilled wings with your choice of peri flavours. On their own or as a meal.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £6.99</div>
+              <button class="btn-add" onclick="addToCart(this,'5 Peri-Peri Wings')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🥩</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">3 Peri Grilled Lamb Chops</div>
+            <div class="menu-card-desc">Juicy lamb chops grilled to perfection. Choice of Mild, Hot, Lemon &amp; Herb, Mango &amp; Lime, BBQ and more.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £9.99</div>
+              <button class="btn-add" onclick="addToCart(this,'3 Lamb Chops')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍔🔥</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Grilled Chicken Breast Burger</div>
+            <div class="menu-card-desc">Juicy peri-grilled chicken breast, choice of sauce, crunchy salad &amp; peri flavour. Meal option available.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £6.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Grilled Chicken Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🌯🔥</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Smokey BBQ &amp; Cheese Wrap</div>
+            <div class="menu-card-desc">Grilled chicken in soft tortilla with melted cheese, smoky BBQ sauce &amp; fresh salad. On its own or as a meal.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Smokey BBQ Cheese Wrap')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SMASH BURGERS -->
+      <div class="menu-category" id="cat-smash">
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍔</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Neo Smash Burger</div>
+            <div class="menu-card-desc">Two smashed fresh beef patties, lettuce, tomato, red onion, gherkins, cheese, golden homemade sauce &amp; spicy mayo on a soft brioche bun.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Neo Smash Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍔🦃</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Turbo Smash Burger</div>
+            <div class="menu-card-desc">Two smashed beef patties, lettuce, tomato, red onion, turkey rashers, gherkins, cheese &amp; golden sauce on brioche.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Turbo Smash Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🇰🇷🍔</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Korean Smash Burger</div>
+            <div class="menu-card-desc">Two smashed beef patties, lettuce, fried onions, cheese &amp; sweet &amp; spicy Korean sauce on brioche bun.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Korean Smash Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍖🔥</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Smokey BBQ Smash Burger</div>
+            <div class="menu-card-desc">Two smashed patties, lettuce, onion rings, caramelized onions, cheese &amp; smoky BBQ sauce on brioche.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Smokey BBQ Smash Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍔🥇</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Solo Smash Burger</div>
+            <div class="menu-card-desc">Smashed fresh beef patty, lettuce, tomato, red onion, cheese &amp; golden homemade sauce on brioche bun.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £6.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Solo Smash Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🛠️🍔</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Build Your Own Smash Burger</div>
+            <div class="menu-card-desc">Customise your smashed beef patty with 4 toppings, 2 sauces &amp; optional cheese on brioche bun.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Build Your Own Smash Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FRIED COLLECTION -->
+      <div class="menu-category" id="cat-fried">
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍔🍗</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Chicken Fillet Burger</div>
+            <div class="menu-card-desc">Crispy fried chicken fillet served on a bed of fresh salad with your choice of sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £5.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Chicken Fillet Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍔🍔</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Double-Decker Chicken Burger</div>
+            <div class="menu-card-desc">Two crispy fried chicken fillets on fresh salad with your choice of sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Double-Decker Chicken Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🌶️🍔</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Hot &amp; Spicy Fillet Burger</div>
+            <div class="menu-card-desc">Crispy, hot &amp; spicy fried chicken fillet on a bed of fresh salad with your choice of sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £6.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Hot &amp; Spicy Fillet Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">👑🍔</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Big Daddy Burger</div>
+            <div class="menu-card-desc">Fried chicken fillet, flame-grilled beef burger, slice of cheese, fresh salad &amp; your choice of sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £8.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Big Daddy Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍗🍗</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">5 Crispy Fried Chicken Fillets</div>
+            <div class="menu-card-desc">Golden on the outside, tender on the inside. Perfectly satisfying.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£5.99</div>
+              <button class="btn-add" onclick="addToCart(this,'5 Crispy Fried Fillets')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🐟🍔</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Fish Fillet Burger</div>
+            <div class="menu-card-desc">Crispy fried fish fillet burger served with fresh salad and your choice of sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £5.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Fish Fillet Burger')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🔥🍖</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">5 Crispy Spicy Fried Wings</div>
+            <div class="menu-card-desc">Crispy and tasty wings with a mild spicy kick. Proper finger food.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£5.99</div>
+              <button class="btn-add" onclick="addToCart(this,'5 Spicy Fried Wings')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🇰🇷🍖</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">3 Korean Wings</div>
+            <div class="menu-card-desc">3 fried wings coated in Korean sauce. Sweet, spicy &amp; totally addictive.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£3.49</div>
+              <button class="btn-add" onclick="addToCart(this,'3 Korean Wings')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOADED BOXES -->
+      <div class="menu-category" id="cat-loaded">
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">📦🍗</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Loaded Peri Peri Chicken &amp; Rice</div>
+            <div class="menu-card-desc">Peri Peri grilled chicken strips with your choice of flavour, served with lightly spiced rice.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Loaded Peri Peri Chicken &amp; Rice')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">📦🥗</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Loaded Peri Peri Chicken &amp; Salad</div>
+            <div class="menu-card-desc">Peri-grilled chicken strips with fresh mixed salad &amp; salad cream on the side.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Loaded Peri Peri Chicken &amp; Salad')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">📦🍟</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Loaded Peri Peri Chicken &amp; Chips</div>
+            <div class="menu-card-desc">Grilled chicken strips with crispy chips, topped with jalapeños &amp; melted cheese.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Loaded Peri Peri Chicken &amp; Chips')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">📦🍗✨</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Loaded Crispy Fried Chicken &amp; Rice</div>
+            <div class="menu-card-desc">Crispy fried chicken strips served with lightly spiced rice.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Loaded Fried Chicken &amp; Rice')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">📦🧀</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Loaded Halloumi Cheese &amp; Rice</div>
+            <div class="menu-card-desc">Fried halloumi cheese served on a bed of lightly spicy rice.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Loaded Halloumi &amp; Rice')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">📦🍟🧀</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Loaded Smash Chips</div>
+            <div class="menu-card-desc">Crispy chips topped with smash, melted cheese &amp; jalapeños. Comfort food elevated.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£7.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Loaded Smash Chips')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDES & MORE -->
+      <div class="menu-category" id="cat-extras">
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍟</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Chips</div>
+            <div class="menu-card-desc">Chips served plain or topped with Peri Peri salt or melted cheese.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £2.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Chips')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🧅</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">5 Onion Rings</div>
+            <div class="menu-card-desc">Crispy fried onion rings, perfect as a savoury side or snack.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£2.99</div>
+              <button class="btn-add" onclick="addToCart(this,'5 Onion Rings')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🌽</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Corn on the Cob</div>
+            <div class="menu-card-desc">Sweet, juicy corn served warm with optional Peri Salt seasoning.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£2.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Corn on the Cob')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍚</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Spicy Rice</div>
+            <div class="menu-card-desc">Deliciously seasoned rice with a spicy kick, perfectly complementing any meal.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£3.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Spicy Rice')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🧆</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Chicken Poppers</div>
+            <div class="menu-card-desc">Golden chicken popcorn with a crispy coating and tender chicken inside.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£4.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Chicken Poppers')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🧀🍟</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">5 Halloumi Fries</div>
+            <div class="menu-card-desc">Fried halloumi fries with a golden finish and a rich, salty bite.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£5.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Halloumi Fries')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🌭</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Jumbo Chicken Hot Dog</div>
+            <div class="menu-card-desc">Beech wood smoked chicken sausage on jumbo toasted bread with your choice of fillings &amp; sauces.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £5.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Jumbo Chicken Hot Dog')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍟🧀🌶️</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">4 Chilli Cheese Bites</div>
+            <div class="menu-card-desc">Crunchy on the outside, gooey and mildly spicy on the inside.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£3.99</div>
+              <button class="btn-add" onclick="addToCart(this,'4 Chilli Cheese Bites')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESSERTS & DRINKS -->
+      <div class="menu-category" id="cat-sweet">
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍰🍓</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Luxury Strawberry Cheesecake</div>
+            <div class="menu-card-desc">Topped with strawberry pieces, drizzled with creamy white chocolate on a crunchy biscuit base.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£3.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Strawberry Cheesecake')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍪🍰</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Lotus Biscoff Cheesecake</div>
+            <div class="menu-card-desc">Vanilla cheesecake made with Lotus Biscoff, swirled &amp; topped with Biscoff spread &amp; crumbs.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£3.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Biscoff Cheesecake')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍩🌀</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">2 Churros &amp; Cinnamon Sugar</div>
+            <div class="menu-card-desc">Two crispy churros sprinkled with cinnamon sugar, with a choice of chocolate sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£3.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Churros')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🥤🍫</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Kinder Bueno Milkshake</div>
+            <div class="menu-card-desc">Rich and creamy Kinder Bueno milkshake. Optional: whipping cream &amp; chocolate sauce.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £5.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Kinder Bueno Milkshake')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍵🧋</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Bubble Tea — Fruit or Milk</div>
+            <div class="menu-card-desc">Cool milk or fruit tea in your choice of flavour, topped with popping boba, jelly or tapioca.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £2.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Bubble Tea')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍦</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Gelato — Create Your Combo</div>
+            <div class="menu-card-desc">Choose any 2 ice cream flavours (Oreo, Pistachio, Dubai Choc, Biscoff…) &amp; add 2 syrups.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">£4.99</div>
+              <button class="btn-add" onclick="addToCart(this,'Gelato Combo')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🥤</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Soft Drinks</div>
+            <div class="menu-card-desc">Coke, Pepsi, 7-Up, Dr Pepper, Tango, Rubicon Mango, Strawberry Mirinda, Water &amp; more.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £1.00</div>
+              <button class="btn-add" onclick="addToCart(this,'Soft Drink')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="menu-card-emoji">🍫🥤</div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">Luxury Combo Milkshake</div>
+            <div class="menu-card-desc">Kinder Bueno &amp; Nutella, or Nutella &amp; Ferrero Rocher — blended luxury in a cup.</div>
+            <div class="menu-card-footer">
+              <div class="menu-card-price">from £6.49</div>
+              <button class="btn-add" onclick="addToCart(this,'Luxury Combo Milkshake')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /menu-grid -->
+  </div>
+</section>
+
+<!-- PLATTERS / DEALS -->
+<section id="deals">
+  <div class="deals-header reveal">
+    <p class="section-label">Platters</p>
+    <h2 class="section-title">Feed the <span>Whole Crew</span></h2>
+  </div>
+  <div class="deals-grid">
+    <div class="deal-card reveal">
+      <div class="deal-badge">🔥 Best Value</div>
+      <div class="deal-emoji">🍗🍟</div>
+      <div class="deal-name">Single Serve Platter</div>
+      <div class="deal-desc">¼ Chicken, 3 Strips or 3 Wings, Chips, Salad, Can of Drink &amp; 1 Dip. Your perfect solo feast.</div>
+      <div class="deal-footer">
+        <div class="deal-price">
+          <span class="deal-price-new">from £11.99</span>
+        </div>
+        <button class="btn-deal" onclick="addToCartDeal('Single Serve Platter')">Order It</button>
+      </div>
+      <div class="deal-savings">Includes drink &amp; dip!</div>
+    </div>
+    <div class="deal-card reveal">
+      <div class="deal-badge">👨‍👩‍👧 Family</div>
+      <div class="deal-emoji">🐓</div>
+      <div class="deal-name">Full Platter</div>
+      <div class="deal-desc">Whole chicken, large chips, 2 sides of your choice (salad, rice or 2 pitta), 1.5L drink &amp; 2 Dips.</div>
+      <div class="deal-footer">
+        <div class="deal-price">
+          <span class="deal-price-new">from £25.99</span>
+        </div>
+        <button class="btn-deal" onclick="addToCartDeal('Full Platter')">Order It</button>
+      </div>
+      <div class="deal-savings">Feeds 3–4 people!</div>
+    </div>
+    <div class="deal-card reveal">
+      <div class="deal-badge">🏆 Ultimate</div>
+      <div class="deal-emoji">🎉</div>
+      <div class="deal-name">Jumbo Platter</div>
+      <div class="deal-desc">2 Whole Chickens, 5 Wings, 5 Strips, Large Chips, 2 sides, 1.5L drink &amp; 2 Dips. Legendary.</div>
+      <div class="deal-footer">
+        <div class="deal-price">
+          <span class="deal-price-new">from £41.99</span>
+        </div>
+        <button class="btn-deal" onclick="addToCartDeal('Jumbo Platter')">Order It</button>
+      </div>
+      <div class="deal-savings">The whole flock feeds 6–8!</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-art reveal-left">
+      <div class="about-art-bg">
+        <div class="about-emoji-main">🐓</div>
+        <div class="about-emoji-orbit orbit-1">🌶️</div>
+        <div class="about-emoji-orbit orbit-2">⭐</div>
+        <div class="about-emoji-orbit orbit-3">🍗</div>
+      </div>
+    </div>
+    <div class="about-text reveal-right">
+      <p class="section-label">Our Story</p>
+      <h2 class="section-title">More Than Just <span>Chicken</span></h2>
+      <p class="about-story">
+        Fat Roosters in Hemel Hempstead is where <strong>flame-grilled Peri Peri</strong>
+        meets crispy fried perfection. From our signature grilled collection to fresh smash burgers,
+        doner kebabs, loaded boxes and indulgent milkshakes — we've built a full menu for every craving.
+      </p>
+      <p class="about-story">
+        Every dish is crafted with fresh ingredients and <strong>real care</strong>.
+        Our Peri Peri chicken is flame-grilled daily in your choice of heat —
+        from Lemon &amp; Herb all the way to Extra Hot 🔥.
+        No shortcuts. Just proper food, done right.
+      </p>
+      <div class="about-pillars">
+        <div class="pillar">
+          <div class="pillar-icon">🔥</div>
+          <div class="pillar-name">Peri Peri Specialists</div>
+          <div class="pillar-desc">6 heat levels from Lemon &amp; Herb to Extra Hot. Find your flame.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🥩</div>
+          <div class="pillar-name">Smash Burgers</div>
+          <div class="pillar-desc">Fresh beef smashed on a hot grill. Juicy, flavourful crust every time.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🥗</div>
+          <div class="pillar-name">Something For Everyone</div>
+          <div class="pillar-desc">Veggie, halloumi, falafel, fish — we've got you covered too.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🛵</div>
+          <div class="pillar-name">Delivery from £0.99</div>
+          <div class="pillar-desc">No minimum order. Order on Just Eat and get it to your door fast.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testi-header reveal">
+    <p class="section-label">Reviews</p>
+    <h2 class="section-title">What They're <span>Saying</span></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <p class="testi-quote">"The peri peri chicken is absolutely incredible — perfectly spiced and so juicy. The loaded box with chips was massive too. Best takeaway in Hemel by far!"</p>
+      <div class="testi-footer">
+        <div class="testi-avatar">SR</div>
+        <div>
+          <div class="testi-name">Sarah R.</div>
+          <div class="testi-location">Hemel Hempstead · Just Eat</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <p class="testi-quote">"Ordered the Neo Smash Burger and it was genuinely one of the best burgers I've ever had. The golden sauce is something else. Already ordered twice this week."</p>
+      <div class="testi-footer">
+        <div class="testi-avatar">JM</div>
+        <div>
+          <div class="testi-name">James M.</div>
+          <div class="testi-location">Hemel Hempstead · Just Eat</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <p class="testi-quote">"Got the Family Platter for a Friday night in. Whole chicken, wings, chips, drinks — everything arrived hot and fresh. The kids demolished it. Brilliant value."</p>
+      <div class="testi-footer">
+        <div class="testi-avatar">TC</div>
+        <div>
+          <div class="testi-name">Tom C.</div>
+          <div class="testi-location">Hemel Hempstead · Just Eat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIND US -->
+<section id="findus">
+  <div class="findus-inner">
+    <div class="findus-info reveal-left">
+      <p class="section-label">Find Us</p>
+      <h2 class="section-title">Visit or <span>Order</span></h2>
+
+      <div class="location-card">
+        <div class="location-name">📍 Fat Roosters — Hemel Hempstead</div>
+        <div class="location-detail"><span class="icon">📍</span> Hemel Hempstead, Hertfordshire</div>
+        <div class="location-detail"><span class="icon">🛵</span> Available on Just Eat — delivery from £0.99</div>
+        <div class="location-detail"><span class="icon">📦</span> No minimum order required</div>
+        <div class="location-hours">
+          <div class="hours-item"><strong>Mon–Thu</strong></div><div class="hours-item">Check app for hours</div>
+          <div class="hours-item"><strong>Fri–Sat</strong></div><div class="hours-item">Late night available</div>
+          <div class="hours-item"><strong>Sunday</strong></div><div class="hours-item">Check app for hours</div>
+        </div>
+      </div>
+
+      <div class="location-card">
+        <div class="location-name">🛵 Order Delivery</div>
+        <div class="location-detail"><span class="icon">📱</span> Order via Just Eat — search "Fat Roosters"</div>
+        <div class="location-detail"><span class="icon">💳</span> Service fee: £0.99–£2.99</div>
+        <div class="location-detail"><span class="icon">⚡</span> Small order fee: £0.00–£2.00</div>
+      </div>
+    </div>
+
+    <div class="map-placeholder reveal-right">
+      <div class="map-grid"></div>
+      <svg class="map-roads" viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <line x1="0" y1="150" x2="600" y2="150" stroke="rgba(196,30,58,0.15)" stroke-width="8"/>
+        <line x1="0" y1="300" x2="600" y2="300" stroke="rgba(196,30,58,0.12)" stroke-width="6"/>
+        <line x1="150" y1="0" x2="150" y2="450" stroke="rgba(196,30,58,0.15)" stroke-width="8"/>
+        <line x1="350" y1="0" x2="350" y2="450" stroke="rgba(196,30,58,0.12)" stroke-width="6"/>
+        <line x1="500" y1="0" x2="500" y2="450" stroke="rgba(196,30,58,0.08)" stroke-width="4"/>
+        <line x1="0" y1="75" x2="600" y2="75" stroke="rgba(255,248,240,0.04)" stroke-width="3"/>
+        <line x1="0" y1="375" x2="600" y2="375" stroke="rgba(255,248,240,0.04)" stroke-width="3"/>
+        <rect x="170" y="165" width="160" height="120" rx="4" fill="rgba(196,30,58,0.08)" stroke="rgba(196,30,58,0.15)" stroke-width="1"/>
+        <rect x="370" y="30" width="110" height="100" rx="4" fill="rgba(245,166,35,0.06)" stroke="rgba(245,166,35,0.1)" stroke-width="1"/>
+        <rect x="20" y="170" width="110" height="80" rx="4" fill="rgba(255,248,240,0.04)" stroke="rgba(255,248,240,0.07)" stroke-width="1"/>
+        <rect x="20" y="310" width="100" height="110" rx="4" fill="rgba(255,248,240,0.04)" stroke="rgba(255,248,240,0.07)" stroke-width="1"/>
+        <rect x="370" y="165" width="100" height="110" rx="4" fill="rgba(255,248,240,0.04)" stroke="rgba(255,248,240,0.07)" stroke-width="1"/>
+        <circle cx="300" cy="225" r="8" fill="var(--red)" opacity="0.9">
+          <animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="300" cy="225" r="5" fill="var(--red)"/>
+      </svg>
+      <div class="map-pin">
+        <div class="map-pin-icon">📍</div>
+        <p>Hemel Hempstead, Hertfordshire</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand reveal">
+      <div class="footer-logo">Fat<span>R</span>oosters 🐓</div>
+      <p class="footer-tagline">Flame-grilled Peri Peri, crispy fried chicken, smash burgers, loaded boxes &amp; more. Hemel Hempstead's favourite.</p>
+      <div class="social-links">
+        <a href="#" class="social-btn" aria-label="Instagram">📸</a>
+        <a href="#" class="social-btn" aria-label="TikTok">🎵</a>
+        <a href="#" class="social-btn" aria-label="Facebook">👤</a>
+      </div>
+    </div>
+    <div class="footer-col reveal">
+      <h4>Menu</h4>
+      <ul class="footer-links">
+        <li><a href="#menu">Grilled Peri Peri</a></li>
+        <li><a href="#menu">Smash Burgers</a></li>
+        <li><a href="#menu">Fried Collection</a></li>
+        <li><a href="#menu">Loaded Boxes</a></li>
+        <li><a href="#menu">Desserts &amp; Drinks</a></li>
+      </ul>
+    </div>
+    <div class="footer-col reveal">
+      <h4>Info</h4>
+      <ul class="footer-links">
+        <li><a href="#deals">Platters</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#findus">Find Us</a></li>
+        <li><a href="#">Allergen Info</a></li>
+        <li><a href="#">Order on Just Eat</a></li>
+      </ul>
+    </div>
+    <div class="footer-col reveal">
+      <h4>Stay Updated</h4>
+      <p style="font-size:.85rem;color:var(--gray);margin-bottom:1rem;line-height:1.5;">Get exclusive deals, new menu alerts &amp; more.</p>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="your@email.com" id="emailInput">
+        <button class="newsletter-btn" onclick="subscribeNewsletter()">Join</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2024 Fat Roosters, Hemel Hempstead. Made with <span>❤️</span> and Peri Peri.</p>
+    <p class="footer-copy" style="color:rgba(255,248,240,.15);">Menu &amp; prices sourced from Just Eat listing.</p>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CART ──────────────────────────────────────────────────────
+let cartItems = 0;
+
+function addToCart(btn, itemName) {
+  cartItems++;
+  updateCart();
+  showToast('🍗 ' + itemName + ' added!');
+  btn.textContent = '✓ Added!';
+  btn.classList.add('added');
+  setTimeout(() => { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1800);
+}
+
+function addToCartDeal(dealName) {
+  cartItems++;
+  updateCart();
+  showToast('🔥 ' + dealName + ' added!');
+}
+
+function updateCart() {
+  const el = document.getElementById('cartCount');
+  el.textContent = cartItems;
+  el.classList.add('bump');
+  setTimeout(() => el.classList.remove('bump'), 300);
+}
+
+// ─── TOAST ─────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── NEWSLETTER ────────────────────────────────────────────────
+function subscribeNewsletter() {
+  const input = document.getElementById('emailInput');
+  if (input.value && input.value.includes('@')) {
+    showToast('🎉 You\'re in! Deals incoming.');
+    input.value = '';
+  } else {
+    showToast('⚠️ Please enter a valid email.');
+  }
+}
+
+// ─── MENU TABS ─────────────────────────────────────────────────
+document.getElementById('menuTabs').addEventListener('click', function(e) {
+  const btn = e.target.closest('.tab');
+  if (!btn) return;
+  const cat = btn.dataset.cat;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.menu-category').forEach(c => c.classList.remove('active'));
+  document.getElementById('cat-' + cat).classList.add('active');
+  // re-trigger reveal on new cards
+  setTimeout(() => {
+    document.querySelectorAll('#cat-' + cat + ' .menu-card').forEach(c => {
+      if (!c.classList.contains('visible')) observer.observe(c);
+    });
+  }, 50);
+});
+
+// ─── NAVBAR SCROLL ─────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ─── HAMBURGER ─────────────────────────────────────────────────
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ─── SCROLL REVEAL ─────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+// ─── FLAME PARTICLES ───────────────────────────────────────────
+(function spawnFlames() {
+  const container = document.getElementById('flames');
+  const emojis = ['🔥', '✨', '💫', '🌶️'];
+  function spawn() {
+    const f = document.createElement('div');
+    f.className = 'flame';
+    f.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    f.style.left = Math.random() * 100 + 'vw';
+    f.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+    const dur = 6 + Math.random() * 8;
+    f.style.animationDuration = dur + 's';
+    container.appendChild(f);
+    setTimeout(() => f.remove(), dur * 1000);
+  }
+  setInterval(spawn, 800);
+  for (let i = 0; i < 5; i++) setTimeout(spawn, i * 300);
+})();
+
+// ─── SMOOTH ANCHOR SCROLLING ────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    const offset = document.getElementById('navbar').offsetHeight + 40;
+    window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
