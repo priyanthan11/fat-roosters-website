@@ -79,13 +79,18 @@ nav {
 }
 nav.scrolled { box-shadow: 0 4px 40px rgba(196,30,58,0.15); border-bottom-color:rgba(196,30,58,0.4); }
 .nav-logo {
+  display: flex; align-items: center; gap: .5rem;
+  flex-shrink: 0; line-height: 1; text-decoration: none;
+}
+.nav-logo img { height: 52px; width: auto; display: block; }
+.nav-logo-text {
   font-family: var(--font-display);
-  font-size: 2rem; letter-spacing:0.05em;
+  font-size: 1.7rem; letter-spacing: 0.05em;
   color: var(--yellow);
   text-shadow: 0 0 20px rgba(245,166,35,0.4);
-  flex-shrink:0; line-height:1;
+  line-height: 1;
 }
-.nav-logo span { color: var(--red); }
+.nav-logo-text span { color: var(--red); }
 .nav-links { display:flex; gap:2.5rem; margin:0 auto; list-style:none; }
 .nav-links a {
   font-family: var(--font-cond); font-size:1rem; font-weight:700;
@@ -448,6 +453,247 @@ footer { background:#050505; border-top:1px solid rgba(196,30,58,.2); padding:5r
   .about-pillars { grid-template-columns:1fr; }
   .delivery-banner { gap:1rem; font-size:.72rem; }
 }
+
+/* ─── AI FOOD BUILDER ─────────────────────────────────── */
+.ai-float-btn {
+  position: fixed; bottom: 2rem; left: 2rem; z-index: 3000;
+  display: flex; align-items: center; gap: .6rem;
+  background: var(--yellow); color: var(--black);
+  font-family: var(--font-cond); font-size: .95rem; font-weight: 900;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: .65rem 1.2rem; border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(245,166,35,.4);
+  transition: transform .2s, box-shadow .2s;
+}
+.ai-float-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,166,35,.55); }
+.ai-float-btn::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 50px;
+  border: 2px solid rgba(245,166,35,.5);
+  animation: aiBtnPulse 2s infinite;
+}
+@keyframes aiBtnPulse {
+  0%,100% { opacity: .6; transform: scale(1); }
+  50%      { opacity: 0; transform: scale(1.15); }
+}
+
+.ai-modal {
+  position: fixed; inset: 0; z-index: 4000;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(10,10,10,.92); backdrop-filter: blur(20px);
+}
+.ai-modal::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: .25; z-index: 0;
+}
+.ai-modal.open { display: flex; }
+.ai-modal-inner {
+  position: relative; z-index: 1;
+  width: min(960px, 96vw); height: min(680px, 94vh);
+  background: var(--dark); border: 1px solid rgba(196,30,58,.25);
+  border-radius: 16px; display: flex; flex-direction: column;
+  overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.7);
+  animation: aiModalIn .35s cubic-bezier(.2,0,.0,1) forwards;
+}
+@keyframes aiModalIn {
+  from { transform: scale(.96) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Main interface */
+.ai-main { display: flex; flex-direction: column; height: 100%; }
+.ai-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.4rem; border-bottom: 1px solid rgba(255,248,240,.07);
+  flex-shrink: 0;
+}
+.ai-header-title {
+  font-family: var(--font-cond); font-size: 1.1rem; font-weight: 900;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--yellow);
+  display: flex; align-items: center; gap: .5rem;
+}
+.ai-header-status {
+  font-size: .78rem; color: rgba(255,248,240,.4);
+  font-family: var(--font-cond); letter-spacing: .08em; text-transform: uppercase;
+}
+.ai-close-btn {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: rgba(255,248,240,.5); font-size: 1.2rem;
+  transition: color .2s, background .2s;
+}
+.ai-close-btn:hover { color: var(--cream); background: rgba(255,255,255,.08); }
+
+.ai-body {
+  display: grid; grid-template-columns: 1fr 320px;
+  flex: 1; overflow: hidden;
+}
+
+/* Chat panel */
+.ai-chat {
+  padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: .75rem;
+  border-right: 1px solid rgba(255,248,240,.06);
+}
+.ai-bubble {
+  max-width: 85%; padding: .75rem 1rem; font-size: .9rem; line-height: 1.55;
+  word-break: break-word;
+}
+.ai-bubble-ai {
+  background: var(--dark2); border-left: 3px solid var(--red);
+  border-radius: 4px 16px 16px 16px; align-self: flex-start; color: var(--cream);
+}
+.ai-bubble-user {
+  background: var(--red); border-radius: 16px 4px 16px 16px;
+  align-self: flex-end; color: white;
+}
+.ai-bubble-thinking {
+  background: var(--dark2); border-left: 3px solid rgba(255,248,240,.2);
+  border-radius: 4px 16px 16px 16px; align-self: flex-start;
+  display: flex; gap: 5px; align-items: center; padding: .9rem 1rem;
+}
+.ai-bubble-thinking span {
+  width: 7px; height: 7px; border-radius: 50%; background: rgba(255,248,240,.4);
+  animation: aiDot .9s infinite;
+}
+.ai-bubble-thinking span:nth-child(2) { animation-delay: .15s; }
+.ai-bubble-thinking span:nth-child(3) { animation-delay: .3s; }
+@keyframes aiDot {
+  0%,80%,100% { transform: scale(.7); opacity: .4; }
+  40%         { transform: scale(1); opacity: 1; }
+}
+
+/* Tray panel */
+.ai-tray-panel {
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.ai-tray-label {
+  font-family: var(--font-cond); font-size: .75rem; font-weight: 700;
+  letter-spacing: .15em; text-transform: uppercase; color: rgba(255,248,240,.3);
+  padding: 1rem 1rem .4rem;
+}
+.ai-tray { flex: 1; overflow-y: auto; padding: 0 .8rem .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.ai-tray-empty {
+  display: flex; align-items: center; justify-content: center; height: 100%;
+  color: rgba(255,248,240,.2); font-size: .85rem; text-align: center; line-height: 1.6;
+}
+.ai-tray-item {
+  background: var(--dark2); border: 1px solid rgba(255,248,240,.07);
+  border-radius: 8px; padding: .6rem .8rem;
+  display: flex; align-items: center; gap: .6rem;
+  animation: traySlideIn .4s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes traySlideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.ai-tray-emoji { font-size: 1.4rem; flex-shrink: 0; }
+.ai-tray-info { flex: 1; min-width: 0; }
+.ai-tray-name { font-size: .82rem; font-weight: 600; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-tray-note { font-size: .72rem; color: rgba(255,248,240,.4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-tray-qty-price { text-align: right; flex-shrink: 0; }
+.ai-tray-price { font-family: var(--font-cond); font-size: .9rem; font-weight: 700; color: var(--yellow); }
+.ai-tray-qty { font-size: .7rem; color: rgba(255,248,240,.35); }
+.ai-tray-total {
+  padding: .8rem 1rem; border-top: 1px solid rgba(255,248,240,.07);
+  font-family: var(--font-cond); font-size: 1rem; font-weight: 900;
+  letter-spacing: .08em; color: var(--yellow); display: flex; justify-content: space-between;
+  flex-shrink: 0;
+}
+
+/* Input bar */
+.ai-input-bar {
+  border-top: 1px solid rgba(255,248,240,.07);
+  padding: .8rem 1rem; flex-shrink: 0;
+}
+.ai-voice-fallback {
+  display: none; font-size: .78rem; color: rgba(255,248,240,.4);
+  padding: .3rem 0 .5rem; text-align: center;
+}
+.ai-input-row { display: flex; gap: .6rem; align-items: flex-end; }
+.ai-text-input {
+  flex: 1; padding: .65rem .9rem; resize: none; min-height: 42px; max-height: 120px;
+  background: var(--dark2); border: 1px solid rgba(255,248,240,.12);
+  border-radius: 8px; color: var(--cream); font-family: var(--font-body);
+  font-size: .9rem; line-height: 1.5; outline: none; transition: border-color .2s;
+}
+.ai-text-input:focus { border-color: rgba(255,248,240,.3); }
+.ai-mic-btn {
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  background: var(--red); display: flex; align-items: center; justify-content: center;
+  position: relative; transition: background .2s; overflow: visible;
+}
+.ai-mic-btn:hover { background: var(--red2); }
+.ai-mic-btn.listening { background: var(--red); }
+.ai-mic-btn.listening::before {
+  content: ''; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid rgba(196,30,58,.6);
+  animation: micPulse 1s infinite;
+}
+@keyframes micPulse {
+  0%,100% { transform: scale(1); opacity: .6; }
+  50%      { transform: scale(1.25); opacity: 0; }
+}
+.ai-waveform { display: none; gap: 2px; align-items: center; height: 18px; }
+.ai-mic-btn.listening .ai-waveform { display: flex; }
+.ai-mic-btn.listening .ai-mic-icon { display: none; }
+.ai-waveform span {
+  display: block; width: 3px; border-radius: 2px; background: white;
+  animation: aiWave .6s ease-in-out infinite alternate;
+  transform-origin: bottom;
+}
+.ai-waveform span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.ai-waveform span:nth-child(2) { height: 14px; animation-delay: .1s; }
+.ai-waveform span:nth-child(3) { height: 18px; animation-delay: .2s; }
+.ai-waveform span:nth-child(4) { height: 14px; animation-delay: .3s; }
+.ai-waveform span:nth-child(5) { height: 8px; animation-delay: .4s; }
+@keyframes aiWave {
+  from { transform: scaleY(.4); }
+  to   { transform: scaleY(1); }
+}
+.ai-send-btn {
+  width: 42px; height: 42px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,248,240,.1); color: var(--cream);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  transition: background .2s;
+}
+.ai-send-btn:hover { background: rgba(255,248,240,.18); }
+
+/* Footer */
+.ai-footer {
+  border-top: 1px solid rgba(255,248,240,.07);
+  padding: .7rem 1rem; display: flex; gap: .6rem; flex-shrink: 0; flex-wrap: wrap;
+}
+.ai-btn-confirm {
+  flex: 1; padding: .6rem 1rem;
+  background: var(--yellow); color: var(--black);
+  font-family: var(--font-cond); font-size: .9rem; font-weight: 900;
+  letter-spacing: .08em; text-transform: uppercase; border-radius: 6px;
+  transition: background .2s;
+}
+.ai-btn-confirm:hover { background: var(--yellow2); }
+.ai-btn-confirm:disabled { opacity: .35; cursor: default; }
+.ai-btn-minor {
+  padding: .6rem .9rem;
+  background: rgba(255,248,240,.07); color: rgba(255,248,240,.5);
+  font-family: var(--font-cond); font-size: .82rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; border-radius: 6px;
+  transition: background .2s, color .2s;
+}
+.ai-btn-minor:hover { background: rgba(255,248,240,.12); color: var(--cream); }
+
+/* Responsive */
+@media(max-width:900px) {
+  .ai-body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .ai-tray-panel { border-top: 1px solid rgba(255,248,240,.07); border-right: none; max-height: 200px; }
+  .ai-chat { border-right: none; }
+}
+@media(max-width:600px) {
+  .ai-modal-inner { border-radius: 12px; }
+  .ai-float-btn .ai-float-label { display: none; }
+  .ai-float-btn { padding: .7rem; }
+  .ai-tray-panel { max-height: 150px; }
+  .ai-tray { flex-direction: row; overflow-x: auto; overflow-y: hidden; }
+  .ai-tray-item { flex-direction: column; align-items: flex-start; min-width: 110px; }
+}
 </style>
 </head>
 <body>
@@ -463,12 +709,16 @@ footer { background:#050505; border-top:1px solid rgba(196,30,58,.2); padding:5r
 
 <!-- NAVIGATION -->
 <nav id="navbar">
-  <div class="nav-logo">Fat<span>R</span>oosters 🐓</div>
+  <a href="#" class="nav-logo">
+    <img src="assets/fat_logo.gif" alt="Fat Roosters logo">
+    <span class="nav-logo-text">Fat<span>R</span>oosters</span>
+  </a>
   <ul class="nav-links">
     <li><a href="#menu">Menu</a></li>
     <li><a href="#deals">Platters</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#findus">Find Us</a></li>
+    <li><a href="#" onclick="event.preventDefault();openFoodBuilder()" style="color:var(--yellow)">✨ AI Build</a></li>
   </ul>
   <div class="nav-right">
     <button class="cart-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
@@ -519,6 +769,7 @@ footer { background:#050505; border-top:1px solid rgba(196,30,58,.2); padding:5r
     <div class="hero-ctas">
       <a href="#menu" class="btn-primary">Order Now 🔥</a>
       <a href="#menu" class="btn-secondary">View Menu</a>
+      <button class="btn-secondary" onclick="openFoodBuilder()" style="border-color:var(--yellow);color:var(--yellow)">Build My Meal ✨</button>
     </div>
   </div>
   <div class="hero-badge">
@@ -1413,6 +1664,80 @@ footer { background:#050505; border-top:1px solid rgba(196,30,58,.2); padding:5r
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- AI FOOD BUILDER FLOAT BTN -->
+<button class="ai-float-btn" onclick="openFoodBuilder()">
+  <span>🤖</span><span class="ai-float-label">Build My Meal</span>
+</button>
+
+<!-- AI FOOD BUILDER MODAL -->
+<div class="ai-modal" id="aiFoodBuilder" role="dialog" aria-modal="true" aria-label="AI Food Builder">
+
+  <div class="ai-modal-inner">
+    <div class="ai-main">
+
+      <!-- HEADER -->
+      <div class="ai-header">
+        <div class="ai-header-title">
+          <img src="assets/fat_logo.gif" alt="" style="height:32px;width:auto;">
+          Build My Meal
+        </div>
+        <div class="ai-header-status" id="aiStatusLabel">Ready</div>
+        <button class="ai-close-btn" onclick="closeAIModal()" aria-label="Close">✕</button>
+      </div>
+
+      <!-- BODY: chat + tray -->
+      <div class="ai-body">
+
+        <!-- CHAT / CONVERSATION -->
+        <div class="ai-chat" id="aiChat"></div>
+
+        <!-- TRAY -->
+        <div class="ai-tray-panel">
+          <div class="ai-tray-label">Your Tray</div>
+          <div class="ai-tray" id="aiTray">
+            <div class="ai-tray-empty" id="aiTrayEmpty">Nothing yet —<br>tell me what you fancy 😋</div>
+          </div>
+          <div class="ai-tray-total" id="aiTrayTotal" style="display:none;">
+            <span>Total</span><span id="aiTrayTotalAmt"></span>
+          </div>
+        </div>
+
+      </div><!-- /ai-body -->
+
+      <!-- INPUT BAR (voice + text) -->
+      <div class="ai-input-bar">
+        <div class="ai-voice-fallback" id="aiVoiceFallback">🎤 Voice not supported in this browser — type below</div>
+        <div class="ai-input-row">
+          <textarea class="ai-text-input" id="aiTextInput" rows="1" placeholder="Describe your meal — e.g. "spicy chicken with chips and a milkshake"…"></textarea>
+          <button class="ai-mic-btn" id="aiMicBtn" onclick="toggleMic()" aria-label="Speak your order">
+            <div class="ai-waveform"><span></span><span></span><span></span><span></span><span></span></div>
+            <svg class="ai-mic-icon" width="18" height="18" viewBox="0 0 24 24" fill="white">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <line x1="12" y1="19" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="8" y1="23" x2="16" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="ai-send-btn" onclick="sendManual()" aria-label="Send">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- FOOTER ACTIONS -->
+      <div class="ai-footer">
+        <button class="ai-btn-confirm" id="aiConfirmBtn" onclick="confirmAIOrder()" disabled>Add All to Cart 🛒</button>
+        <button class="ai-btn-minor" onclick="clearTray()">Clear Tray</button>
+      </div>
+
+    </div><!-- /ai-main -->
+  </div>
+
+</div><!-- /aiFoodBuilder -->
+
 <script>
 // ─── CART ──────────────────────────────────────────────────────
 let cartItems = 0;
@@ -1525,6 +1850,208 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     const offset = document.getElementById('navbar').offsetHeight + 40;
     window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
   });
+});
+
+// ─── AI FOOD BUILDER (placeholder — AI logic wired in separately) ──
+let aiState = 'idle';
+let trayItems = [];
+
+function setState(s) {
+  aiState = s;
+  const statusEl = document.getElementById('aiStatusLabel');
+  const micBtn   = document.getElementById('aiMicBtn');
+  const labels   = { idle: 'Ready', listening: '🔴 Listening…', thinking: '⏳ Thinking…' };
+  if (statusEl) statusEl.textContent = labels[s] || 'Ready';
+  if (micBtn)   micBtn.classList.toggle('listening', s === 'listening');
+}
+
+function openFoodBuilder() {
+  const modal = document.getElementById('aiFoodBuilder');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // init UI on first open
+  if (!document.getElementById('aiChat').dataset.init) {
+    document.getElementById('aiChat').dataset.init = '1';
+    trayItems = [];
+    renderTray();
+    if (!VoiceCapture.supported) {
+      document.getElementById('aiVoiceFallback').style.display = 'block';
+      document.getElementById('aiMicBtn').style.display = 'none';
+    }
+    addAIChatBubble("Hey! 👋 Tell me what you're in the mood for — spicy, grilled, comfort food? I'll build your perfect meal.", 'ai');
+  }
+  setState('idle');
+}
+
+function closeAIModal() {
+  document.getElementById('aiFoodBuilder').classList.remove('open');
+  document.body.style.overflow = '';
+  VoiceCapture.stop();
+  setState('idle');
+}
+
+// ── Voice ──────────────────────────────────────────────────────
+const VoiceCapture = {
+  supported: ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window),
+  recognition: null,
+  start(onResult, onError) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    this.recognition = new SR();
+    this.recognition.lang = 'en-GB';
+    this.recognition.interimResults = true;
+    this.recognition.onresult = (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      document.getElementById('aiTextInput').value = transcript;
+      if (e.results[e.results.length - 1].isFinal) {
+        this.stop();
+        onResult(transcript);
+      }
+    };
+    this.recognition.onerror = (e) => onError(e.error);
+    this.recognition.onend   = () => { if (aiState === 'listening') setState('idle'); };
+    this.recognition.start();
+  },
+  stop() { try { this.recognition?.stop(); } catch(e) {} }
+};
+
+function toggleMic() {
+  if (aiState === 'listening') {
+    VoiceCapture.stop();
+    setState('idle');
+  } else if (aiState === 'idle') {
+    VoiceCapture.start(
+      (transcript) => {
+        setState('idle');
+        processInput(transcript);
+      },
+      (err) => {
+        if (err === 'no-speech')   showToast("Didn't catch that — try again 🎤");
+        if (err === 'not-allowed') {
+          document.getElementById('aiVoiceFallback').style.display = 'block';
+          document.getElementById('aiMicBtn').style.display = 'none';
+        }
+        setState('idle');
+      }
+    );
+    setState('listening');
+  }
+}
+
+// ── Text send ─────────────────────────────────────────────────
+function sendManual() {
+  const input = document.getElementById('aiTextInput');
+  const text  = input.value.trim();
+  if (!text || aiState !== 'idle') return;
+  input.value = '';
+  input.style.height = '';
+  processInput(text);
+}
+
+// ── Core: receives voice/text, shows bubble + placeholder response ──
+function processInput(text) {
+  addAIChatBubble(text, 'user');
+  setState('thinking');
+
+  // Thinking animation
+  const thinking = document.createElement('div');
+  thinking.className = 'ai-bubble ai-bubble-thinking';
+  thinking.innerHTML  = '<span></span><span></span><span></span>';
+  thinking.id = 'aiThinking';
+  document.getElementById('aiChat').appendChild(thinking);
+  scrollChat();
+
+  // TODO: replace timeout with real AI call
+  setTimeout(() => {
+    document.getElementById('aiThinking')?.remove();
+    addAIChatBubble("Got it! Your AI food builder is coming soon — I'll suggest the perfect meal for you. 🍗🔥", 'ai', true, () => setState('idle'));
+  }, 1200);
+}
+
+// ── Tray ──────────────────────────────────────────────────────
+function renderTray() {
+  const tray      = document.getElementById('aiTray');
+  const totalEl   = document.getElementById('aiTrayTotal');
+  const totalAmt  = document.getElementById('aiTrayTotalAmt');
+  const confirmBtn= document.getElementById('aiConfirmBtn');
+
+  if (!trayItems.length) {
+    tray.innerHTML = '<div class="ai-tray-empty" id="aiTrayEmpty">Nothing yet —<br>tell me what you fancy 😋</div>';
+    if (totalEl)    totalEl.style.display = 'none';
+    if (confirmBtn) confirmBtn.disabled = true;
+    return;
+  }
+
+  tray.innerHTML = '';
+  let total = 0;
+  trayItems.forEach(item => {
+    total += item.price * (item.qty || 1);
+    const el = document.createElement('div');
+    el.className = 'ai-tray-item';
+    el.innerHTML = `
+      <div class="ai-tray-emoji">${item.emoji || '🍽️'}</div>
+      <div class="ai-tray-info">
+        <div class="ai-tray-name">${item.name}</div>
+        ${item.note ? `<div class="ai-tray-note">${item.note}</div>` : ''}
+      </div>
+      <div class="ai-tray-qty-price">
+        <div class="ai-tray-price">£${(item.price * (item.qty||1)).toFixed(2)}</div>
+        ${item.qty > 1 ? `<div class="ai-tray-qty">×${item.qty}</div>` : ''}
+      </div>`;
+    tray.appendChild(el);
+  });
+  if (totalEl)   { totalEl.style.display = 'flex'; totalAmt.textContent = '£' + total.toFixed(2); }
+  if (confirmBtn) confirmBtn.disabled = false;
+}
+
+function clearTray() {
+  trayItems = [];
+  renderTray();
+}
+
+function confirmAIOrder() {
+  if (!trayItems.length) return;
+  trayItems.forEach(item => { for (let i = 0; i < (item.qty||1); i++) cartItems++; });
+  updateCart();
+  const names = trayItems.map(t => t.name).join(', ');
+  showToast('🛒 Added: ' + names.slice(0, 60) + (names.length > 60 ? '…' : ''));
+  closeAIModal();
+}
+
+// ── Chat bubbles ──────────────────────────────────────────────
+function addAIChatBubble(text, role, typewriter = false, onDone = null) {
+  const chat   = document.getElementById('aiChat');
+  const bubble = document.createElement('div');
+  bubble.className = `ai-bubble ai-bubble-${role}`;
+  chat.appendChild(bubble);
+  scrollChat();
+  if (role === 'ai' && typewriter) {
+    let i = 0;
+    (function tick() {
+      bubble.textContent = text.slice(0, i++);
+      scrollChat();
+      i <= text.length ? setTimeout(tick, 18) : onDone && onDone();
+    })();
+  } else {
+    bubble.textContent = text;
+    if (onDone) onDone();
+  }
+}
+
+function scrollChat() {
+  const c = document.getElementById('aiChat');
+  if (c) c.scrollTop = c.scrollHeight;
+}
+
+// ── Keyboard / resize ─────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('aiFoodBuilder').classList.contains('open')) closeAIModal();
+});
+document.getElementById('aiTextInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendManual(); }
+});
+document.getElementById('aiTextInput').addEventListener('input', function() {
+  this.style.height = '';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
 </script>
 </body>
